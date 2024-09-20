@@ -194,15 +194,34 @@ def execute_scripts(auth_repo, last_commit, scripts_rel_path, data, scripts_root
         json_data = json.dumps(data)
         try:
             if Path(script_path).suffix == ".py":
-                output = run(sys.executable, script_path, input=json_data)
+                if "globals" in script_path:
+                    continue
+                
+                # exec(open(f'{script_path}').read())
+                # exec(open(f'{script_path}').read(), global_scope)
+                # globals_string = (Path(script_path).parent / "globals.py").read_text()
+                # global_scope = {}
+                # exec(globals_string, global_scope)
+                # breakpoint()
+                # global_variables=extract_global_variables(script_path)
+                output = run(f"{sys.executable}", "scripts", "execute", script_path, input=json_data)
+                # breakpoint()
+                # output = run(f"{sys.executable}", script_path, input=json_data)
             # assume that all other types of files are non-OS-specific executables of some kind
+            # else:
+            # # output = exec(open(f'{script_path}').read())
+            #     output = run_subprocess([script_path])
+        except Exception as e:
+            if type(e) is subprocess.CalledProcessError:
+                taf_logger.error(
+                    f"An error occurred while executing {script_path}: {e.output}"
+                )
+                raise ScriptExecutionError(script_path, e.output)
             else:
-                output = run_subprocess([script_path])
-        except subprocess.CalledProcessError as e:
-            taf_logger.error(
-                "An error occurred while executing {}: {}", script_path, e.output
-            )
-            raise ScriptExecutionError(script_path, e.output)
+                taf_logger.error(
+                    f"An error occurred while executing {script_path}: {str(e)}"
+                )
+                raise ScriptExecutionError(script_path, str(e))
         if type(output) is bytes:
             output = output.decode()
         if output is not None and output != "":
