@@ -48,7 +48,6 @@ config_db = {}
 # persistent data should be read from persistent file and updated after every handler call
 # should be one file per library root
 
-
 def _get_script_path(lifecycle_stage, event):
     if settings.development_mode:
         return f"{lifecycle_stage.value}/{event.value}"
