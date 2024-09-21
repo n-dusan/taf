@@ -44,8 +44,5 @@ def execute_command():
     return execute
 
 
-
-
-
 def attach_to_group(group):
     group.add_command(execute_command(), name='execute')
