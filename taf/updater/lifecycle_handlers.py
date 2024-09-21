@@ -190,7 +190,7 @@ def execute_scripts(auth_repo, last_commit, scripts_rel_path, data, scripts_root
             script_paths = []
 
     for script_path in sorted(script_paths):
-        taf_logger.info("Executing script {}", script_path)
+        taf_logger.log("NOTICE", f"Executing script {script_path}")
         json_data = json.dumps(data)
         try:
             if Path(script_path).suffix == ".py":
