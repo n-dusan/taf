@@ -215,6 +215,7 @@ def execute_scripts(auth_repo, last_commit, scripts_rel_path, data, scripts_root
                 raise ScriptExecutionError(script_path, str(e))
         if type(output) is bytes:
             output = output.decode()
+        transient_data = persistent_data = {}
         if output is not None and output != "":
             # if the script contains print statements other than the final
             # print which outputs transient and persistent data
@@ -225,8 +226,6 @@ def execute_scripts(auth_repo, last_commit, scripts_rel_path, data, scripts_root
                 persistent_data = json_data.get("persistent")
                 if transient_data is not None or persistent_data is not None:
                     break
-        else:
-            transient_data = persistent_data = {}
         taf_logger.debug("Persistent data: {}", persistent_data)
         taf_logger.debug("Transient data: {}", transient_data)
         # overwrite current persistent and transient data
