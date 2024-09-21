@@ -25,6 +25,8 @@ def extract_global_variables(filename):
         except:
             pass
 
+    global_vars["__file__"] = filename
+
     return global_vars
 
 def execute_command():
