@@ -48,6 +48,7 @@ config_db = {}
 # persistent data should be read from persistent file and updated after every handler call
 # should be one file per library root
 
+
 def _get_script_path(lifecycle_stage, event):
     if settings.development_mode:
         return f"{lifecycle_stage.value}/{event.value}"
@@ -194,9 +195,15 @@ def execute_scripts(auth_repo, last_commit, scripts_rel_path, data, scripts_root
         json_data = json.dumps(data)
         try:
             if Path(script_path).suffix == ".py":
-                if getattr(sys, 'frozen', False):
+                if getattr(sys, "frozen", False):
                     # we are running in a pyinstaller bundle
-                    output = run(f"{sys.executable}", "scripts", "execute", script_path, input=json_data)
+                    output = run(
+                        f"{sys.executable}",
+                        "scripts",
+                        "execute",
+                        script_path,
+                        input=json_data,
+                    )
                 else:
                     output = run(f"{sys.executable}", script_path, input=json_data)
             # assume that all other types of files are non-OS-specific executables of some kind
